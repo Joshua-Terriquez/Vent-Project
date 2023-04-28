@@ -1,0 +1,49 @@
+.menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+  }
+  
+  .strip {
+    background-color: #fff;
+    height: 2px;
+    margin-bottom: 4px;
+    transition: all 0.3s ease-in-out;
+    width: 20px;
+  }
+  
+  .strip:nth-child(2) {
+    width: 16px;
+  }
+  
+  .strip:nth-child(3) {
+    width: 12px;
+  }
+  
+  .menu-open .strip:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+  
+  .menu-open .strip:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .menu-open .strip:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+  
+  .sidebar {
+    background-color: #333;
+    height: 100vh;
+    left: -300px;
+    position: fixed;
+    top: 0;
+    transition: all 0.3s ease-in-out;
+    width: 300px;
+  }
+  
+  .menu-open .sidebar {
+    left: 0;
+  }
