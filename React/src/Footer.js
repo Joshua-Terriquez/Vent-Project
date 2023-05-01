@@ -10,6 +10,7 @@ import LogOutButton from "./LogOutButton.js";
 
 function Footer(){
     const [isNaviBarOpen, setIsNaviBarOpen] = useState(false);
+    const [isPostFormOpen, setIsPostFormOpen] = useState(false);
     const [activeElement, setActiveElement] = useState(null);
     const toggleNaviBar = () => {
         setIsNaviBarOpen(!isNaviBarOpen);
@@ -18,9 +19,14 @@ function Footer(){
         setActiveElement(element);
         setIsNaviBarOpen(false);
     }
+    const togglePostForm = () => {
+      setIsPostFormOpen(!isPostFormOpen);
+    }
     return(
         <footer>
-        <button onClick={toggleNaviBar}>Toggle Navigation</button>
+        <button className ="UIButtons" onClick={toggleNaviBar}>
+          <img className ="UIIcons" id="NaviBarIcon" src={NaviBarIcon} alt="NaviBar" />
+        </button>
         {isNaviBarOpen && (
           <Nav handleClick={handleNaviBarClick} />
         )}
@@ -33,6 +39,12 @@ function Footer(){
         {activeElement === 'Setting' && (
           <Setting />
         )}
+        <button className ="UIButtons" onClick={togglePostForm}>
+          <img className ="UIIcons" id="PostFormIcon" src={PostFormIcon} alt="PostForm" />
+        </button>
+          {isPostFormOpen && (
+            <PostForm />
+          )}
         <LogOutButton />
       </footer>
     );
