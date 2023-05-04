@@ -6,6 +6,7 @@ import os
 
 SECRET_KEY = os.urandom(32)
 app = Flask(__name__, static_folder='./frontend/build/static', template_folder='./frontend/build')
+app.secret_key = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -23,11 +24,18 @@ class User(UserMixin, db.Model):
 
 class UserPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date = db.Column(db.Text, nullable=False, default=str(datetime.now))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     post_str = db.Column(db.Text)
     post_like = db.Column(db.Integer, default = 0)
     post_dislike = db.Column(db.Integer, default = 0)
+
+    def __init__(self,Date,Userid,Content,Likes,Dislikes):
+        self.date = Date
+        self.user_id = Userid
+        self.post_str= Content
+        self.post_like = Likes
+        self.post_dislike = Dislikes
 
     
 ################################
@@ -72,7 +80,7 @@ def login():
             login_user(user)
             session['email'] = user.email
             session["loggedin"] = True
-            session["user"] = user
+            session["user"] = {'id': user.id, 'name': user.name}
             return {"code": "12345"}
             # return flask.redirect(flask.url_for('home'))
         print("yea this didnt work")
@@ -112,12 +120,12 @@ def home():
 @app.route('/like')
 @login_required
 def like():
-    return 
+    return {}
 
 @app.route('/dislike')
 @login_required
 def dislike():
-    return 
+    return {}
 
 @app.route('/Post', methods=['POST'] )
 @login_required
@@ -129,16 +137,17 @@ def Post():
     # post_like = db.Column(db.int)
     # post_dislike = db.Column(db.int)
 
-    user = session['user']
+    if request.method == 'POST':
+        post = request.get_json()
+        userInfo = session.get("user")
+        print(userInfo["id"])
+        print("333333333333333333333333333333333333333333333")
 
-    post = request.get_json()
-    retrieveContent = post["content"]
+        new_post = UserPost(str(datetime.now), userInfo["id"], post, 0, 0)
+        db.session.add(new_post)
+        db.session.commit()
 
-    new_post = Post(datetime.utcnow, user.id, retrieveContent,)
-    db.session.add(new_post)
-    db.session.commit()
-
-    return
+        return {"empty" : 0}
 
 @app.route('/Profile')
 @login_required
@@ -152,8 +161,8 @@ def MyFeed():
 
 if __name__ == "__main__":
     with app.app_context():
+        db.create_all()
         # new_user = User(name="test", email="test@gmail.com", password="12345")
         # db.session.add(new_user)
         # db.session.commit()
-        db.create_all()
     app.run(debug =True)

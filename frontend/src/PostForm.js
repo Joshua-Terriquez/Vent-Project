@@ -5,11 +5,11 @@ function PostForm() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const url = '/Post';
-        const data = {content};
+        const data = content;
         fetch(url, {
             method: 'POST',
-            header: {'Content-Type': 'application/json'},
             body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => response.json())
             .then((data) => {
