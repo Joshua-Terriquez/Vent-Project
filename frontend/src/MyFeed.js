@@ -5,7 +5,7 @@ function MyFeed() {
   const [dislikeCount, setDislikeCount] = useState(0);
   const fetchPostData = () => {
     //change the api address to connect
-    fetch("/api")
+    fetch("/MyFeed")
       .then((response) => response.json())
       .then((data) => {
         //change dictionary name to match flask
@@ -19,7 +19,7 @@ function MyFeed() {
   }, []);
   const handleLikeClick = () => {
     //change dictionary name to match flask
-    fetch("/api", {method: "POST"})
+    fetch("/like", {method: "POST"})
       .then((response) => response.json())
       .then((data) => {
         setLikeCount(data.likeCount);
@@ -28,7 +28,7 @@ function MyFeed() {
   };
   const handleDislikeClick = () => {
     //change dictionary name to match flask
-    fetch("/api", {method: "POST"})
+    fetch("/dislike", {method: "POST"})
       .then((response) => response.json())
       .then((data) => {
         setLikeCount(data.setDislikeCount);

@@ -157,7 +157,13 @@ def Profile():
 @app.route('/MyFeed')
 @login_required
 def MyFeed():
-    return 
+    if request.method == 'GET':
+        info = session.get("user")
+        id = info["id"]
+
+        post = UserPost.query.filter_by(user_id = id).first()
+
+        return {"postContent" : post.post_str, "likeCount" : post.post_like, "setDislikeCount" : post.post_dislike}
 
 if __name__ == "__main__":
     with app.app_context():
