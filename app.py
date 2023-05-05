@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import random
 from flask_login import LoginManager, login_user, logout_user, UserMixin, login_required
 import os
 
@@ -117,31 +118,67 @@ def home():
 #: Login, logout, session token(maybe),
 # new post upload, like/dislike (onclick return a new post to populate the <h2>, GET all post from self.
 
-@app.route('/like')
+@app.route('/like', methods=['PUT'] )
 @login_required
 def like():
-    return {}
 
-@app.route('/dislike')
+    if request.method == 'PUT':
+
+        print(session.get("postNumber"))
+
+        postid = session.get("postNumber")
+
+        post = UserPost.query.filter_by(id = int(postid)).first()
+
+        print(post)
+
+        likeCount = post.post_like
+        
+        likeCount = likeCount + 1
+
+        post.post_like = likeCount
+
+        db.session.commit()
+
+        return{"likeCount" : post.post_like}
+
+
+
+@app.route('/dislike', methods=['PUT'] )
 @login_required
 def dislike():
-    return {}
+    
+    if request.method == 'PUT':
+
+        print(session.get("postNumber"))
+
+        postid = session.get("postNumber")
+
+        post = UserPost.query.filter_by(id = int(postid)).first()
+        
+        print(post)
+
+
+        dislikeCount = post.post_dislike
+        
+        dislikeCount = dislikeCount + 1
+
+        post.post_dislike = dislikeCount
+
+        db.session.commit()
+
+
+        return{"setDislikeCount" : post.post_dislike}
+    
+    
+
 
 @app.route('/Post', methods=['POST'] )
 @login_required
 def Post():
-    # id = db.Column(db.Integer, primary_key=True)
-    # date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # post_str = db.Column(db.Text)
-    # post_like = db.Column(db.int)
-    # post_dislike = db.Column(db.int)
-
     if request.method == 'POST':
         post = request.get_json()
         userInfo = session.get("user")
-        print(userInfo["id"])
-        print("333333333333333333333333333333333333333333333")
 
         new_post = UserPost(str(datetime.now), userInfo["id"], post, 0, 0)
         db.session.add(new_post)
@@ -161,12 +198,27 @@ def MyFeed():
         info = session.get("user")
         id = info["id"]
 
-        post = UserPost.query.filter_by(user_id = id).first()
 
-        return {"postContent" : post.post_str, "likeCount" : post.post_like, "setDislikeCount" : post.post_dislike}
+
+        post = []
+        post = UserPost.query.filter(UserPost.user_id != id).all()
+        
+        numberOfAccounts = len(post)
+        postid = random.randrange(1, numberOfAccounts)
+
+        chosenPost = post[postid]
+
+        session["postNumber"] = chosenPost.id
+
+
+        return{"postContent" : post[postid].post_str, "likeCount" : post[postid].post_like, "setDislikeCount" : post[postid].post_dislike}
 
 if __name__ == "__main__":
     with app.app_context():
+        # new_user = User(name="test2", email="test", password="1")
+        # db.session.add(new_user)
+        # db.session.commit()
+
         db.create_all()
         # new_user = User(name="test", email="test@gmail.com", password="12345")
         # db.session.add(new_user)

@@ -19,7 +19,7 @@ function MyFeed() {
   }, []);
   const handleLikeClick = () => {
     //change dictionary name to match flask
-    fetch("/like", {method: "POST"})
+    fetch("/like", {method: "PUT"})
       .then((response) => response.json())
       .then((data) => {
         setLikeCount(data.likeCount);
@@ -28,7 +28,7 @@ function MyFeed() {
   };
   const handleDislikeClick = () => {
     //change dictionary name to match flask
-    fetch("/dislike", {method: "POST"})
+    fetch("/dislike", {method: "PUT"})
       .then((response) => response.json())
       .then((data) => {
         setLikeCount(data.setDislikeCount);
