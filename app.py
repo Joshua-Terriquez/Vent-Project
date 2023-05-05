@@ -186,32 +186,60 @@ def Post():
 
         return {"empty" : 0}
 
-@app.route('/Profile')
+@app.route('/profile/posts')
 @login_required
 def Profile():
-    return 
+
+    #     id = db.Column(db.Integer, primary_key=True)
+    # date = db.Column(db.Text, nullable=False, default=str(datetime.now))
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # post_str = db.Column(db.Text)
+    # post_like = db.Column(db.Integer, default = 0)
+    # post_dislike = db.Column(db.Integer, default = 0)
+
+    info = session.get("user")
+    id = info["id"]
+    posts = UserPost.query.filter(UserPost.user_id == id).all()
+
+    allPost = {}
+    listPost = []
+
+    for post in posts:
+        allPost.update({"postContent" : post.post_str, "likeCount" : post.post_like, "dislikeCount" : post.post_dislike})
+        
+    print(allPost)
+
+    listPost = allPost
+
+    return allPost
+
+
+@app.route('/profile/post/<int:postId>', methods=['DELETE'])
+@login_required
+def Profile_delete(postId):
+    query = UserPost.query.filter_by(id=postId).first()
+    db.session.delete(query)
+    db.session.commit()
+    return {}
 
 @app.route('/MyFeed')
 @login_required
 def MyFeed():
-    if request.method == 'GET':
-        info = session.get("user")
-        id = info["id"]
+    info = session.get("user")
+    id = info["id"]
+
+    post = []
+    post = UserPost.query.filter(UserPost.user_id != id).all()
+    
+    numberOfAccounts = len(post)
+    postid = random.randrange(1, numberOfAccounts)
+
+    chosenPost = post[postid]
+
+    session["postNumber"] = chosenPost.id
 
 
-
-        post = []
-        post = UserPost.query.filter(UserPost.user_id != id).all()
-        
-        numberOfAccounts = len(post)
-        postid = random.randrange(1, numberOfAccounts)
-
-        chosenPost = post[postid]
-
-        session["postNumber"] = chosenPost.id
-
-
-        return{"postContent" : post[postid].post_str, "likeCount" : post[postid].post_like, "setDislikeCount" : post[postid].post_dislike}
+    return{"postContent" : post[postid].post_str, "likeCount" : post[postid].post_like, "setDislikeCount" : post[postid].post_dislike}
 
 if __name__ == "__main__":
     with app.app_context():
