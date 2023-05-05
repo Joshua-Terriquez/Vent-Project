@@ -1,17 +1,20 @@
 import React from "react";
 import "./NaviBarStyle.css"
 
-const NaviBar = ({items, activeItem, onItemClick}) =>{
+function NaviBar(props) {
+  const { handleClick } = props;
   return (
-    <div className="naviBar">
+    <aside className="sidebar">
+    <nav className="nav">
       <ul>
-        {items.map((item, index) => (
-          <li key ={index} className={activeItem === index ? 'active' : ''}>
-            <a href="#" onClick={() => onItemClick(index)}>{item}</a>
-          </li>
-        ))}
+      <li><a href="#"  onClick={() => handleClick('MyFeed')}>Feed</a></li>
+          <li><a href="#" onClick={() => handleClick('MyProfile')}>Profile</a></li>
+          <li><a href="#" onClick={() => handleClick('Setting')}>Setting</a></li>
+          <li><a href="#" onClick={() => handleClick('Logout')}>Logout</a></li>
       </ul>
-    </div>
+    </nav>
+    </aside>
   );
-};
+}
+
 export default NaviBar;

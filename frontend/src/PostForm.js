@@ -4,12 +4,12 @@ function PostForm() {
     const [content, setContent] = useState('');
     const handleSubmit = (event) => {
         event.preventDefault();
-        const url = '/Post';
-        const data = content;
+        const url = 'http://';
+        const data = {content};
         fetch(url, {
             method: 'POST',
+            header: {'Content-Type': 'application/json'},
             body: JSON.stringify(data),
-            headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => response.json())
             .then((data) => {
@@ -34,6 +34,6 @@ function PostForm() {
             />
             <button type="submit">Vent</button>
         </form>
-    )
+    );
 }
 export default PostForm;

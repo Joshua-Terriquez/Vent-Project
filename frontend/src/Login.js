@@ -22,12 +22,8 @@ function Login() {
       .then(data => {
         // Handle successful login
         if(data["code"] = "12345"){
-            ReactDOM.render(<Footer />, document.getElementById('root'));
+          ReactDOM.render(<Footer />, document.getElementById('root'));
         }
-        // if(data["code"] = " 12345"){
-        //   //window.location.href = "/myFeed"
-        //   window.location.href = "/myFeed"
-        // }
       })
       .catch(error => {
         // Handle failed login

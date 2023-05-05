@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import './MyFeed.css';
 function MyFeed() {
-  const [postContent, setPostContent] = useState("Post Goes");
+  const [postContent, setPostContent] = useState("");
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
   const fetchPostData = () => {
@@ -12,7 +13,7 @@ function MyFeed() {
         setPostContent(data.postContent);
         setLikeCount(data.likeCount);
         setDislikeCount(data.setDislikeCount);
-      });
+    });
   };
   useEffect(() => {
     fetchPostData();
@@ -28,19 +29,21 @@ function MyFeed() {
   };
   const handleDislikeClick = () => {
     //change dictionary name to match flask
-    fetch("/dislike", {method: "PUT"})
+    fetch("/api", {method: "PUT"})
       .then((response) => response.json())
       .then((data) => {
         setLikeCount(data.setDislikeCount);
         fetchPostData();
-      });
+    });
   };
   return (
     //change dictionary name to match flask
     <div className='MyFeed'>
-      <button onClick={handleLikeClick}>Like ({likeCount})</button>
-      <h2>{postContent}</h2>
-      <button onClick={handleDislikeClick}>Dislike ({dislikeCount})</button>
+      <button className = "like" onClick={handleLikeClick}></button>
+      <h4>Like ({likeCount})</h4>
+      <h2 className='feed'>{postContent}</h2>
+      <button className = "dislike" onClick={handleDislikeClick}></button>
+      <h4>Dislike ({dislikeCount})</h4>
     </div>
   );
 }

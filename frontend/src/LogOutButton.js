@@ -3,7 +3,7 @@ import Login from "./Login"
 import ReactDOM from 'react-dom';
 function LogOutButton(){
     const [loggedOut, setLoggedOut] = useState(false);
-
+    
     const handleLogout = () => {
         fetch("/logout")
             .then((res) => res.json())

@@ -1,12 +1,13 @@
 import React, {useState} from "react";
-import NaviBar from "./NaviBar.js";
 import PostForm from "./PostForm.js";
 import NaviBarIcon from "./assets/NaviBarIcon.png";
 import PostFormIcon from "./assets/PostFormIcon.png";
 import MyFeed from './MyFeed';
 import MyProfile from './MyProfile';
 import Setting from './Setting';
-import LogOutButton from "./LogOutButton.js";
+import NaviBar from './NaviBar'
+import LogOutButton from "./LogOutButton";
+import "./Footer.css"
 
 function Footer(){
     const [isNaviBarOpen, setIsNaviBarOpen] = useState(false);
@@ -24,12 +25,10 @@ function Footer(){
     }
     return(
         <footer>
-        <button className ="UIButtons" onClick={toggleNaviBar}>
+        <button className ="NaviBarButton" onClick={toggleNaviBar}>
           <img className ="UIIcons" id="NaviBarIcon" src={NaviBarIcon} alt="NaviBar" />
         </button>
-        {isNaviBarOpen && (
-          <Nav handleClick={handleNaviBarClick} />
-        )}
+        {isNaviBarOpen && <NaviBar handleClick={handleNaviBarClick} />}
         {activeElement === 'MyFeed' && (
           <MyFeed />
         )}
@@ -39,26 +38,19 @@ function Footer(){
         {activeElement === 'Setting' && (
           <Setting />
         )}
-        <button className ="UIButtons" onClick={togglePostForm}>
-          <img className ="UIIcons" id="PostFormIcon" src={PostFormIcon} alt="PostForm" />
-        </button>
-          {isPostFormOpen && (
-            <PostForm />
-          )}
-        <LogOutButton />
+        {activeElement === 'Logout' && (
+          <LogOutButton />
+        )}
+        {activeElement === 'MyFeed' || activeElement === 'MyProfile' ? (
+          <button className ="PostButton" onClick={togglePostForm}>
+            <img className ="UIIcons" id="PostFormIcon" src={PostFormIcon} alt="PostForm" />
+          </button>
+        ) : null}
+        {activeElement === 'MyFeed' || activeElement === 'MyProfile' ? (
+          isPostFormOpen && <PostForm />
+        ) : null}
       </footer>
     );
 }
-function Nav(props) {
-    const { handleClick } = props;
-    return (
-      <nav>
-        <ul>
-          <li><a href="#"  onClick={() => handleClick('MyFeed')}>Feed</a></li>
-          <li><a href="#" onClick={() => handleClick('MyProfile')}>Profile</a></li>
-          <li><a href="#" onClick={() => handleClick('Setting')}>Setting</a></li>
-        </ul>
-      </nav>
-    );
-  }
+
 export default Footer;
