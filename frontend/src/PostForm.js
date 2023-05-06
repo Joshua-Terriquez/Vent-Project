@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-
+import "./PostForm.css";
 function PostForm() {
     const [content, setContent] = useState('');
     const handleSubmit = (event) => {
