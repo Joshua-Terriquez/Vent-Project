@@ -27,7 +27,7 @@ function PostTemplate({post, onDelete}){
 }
 
 function MyProfile(){
-  const [myPosts, setMyPosts] = useState({});
+  const [myPosts, setMyPosts] = useState([]);
   //handle get my posts
   useEffect(() => {
     fetch("/profile/posts")
