@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template, session
+from flask import Flask, request, redirect, url_for, render_template, session,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import random
@@ -209,35 +209,47 @@ def Profile():
 
     info = session.get("user")
     id = info["id"]
-    posts = UserPost.query.filter(UserPost.user_id == id).all()
+    print(id)
 
-    allPost = {}
+    post = []
+    posts = UserPost.query.all()
+
     listPost = []
 
+    print(posts)
+
     for post in posts:
-        allPost.update({"postContent" : post.post_str, "likeCount" : post.post_like, "dislikeCount" : post.post_dislike})
-        
-    print(allPost)
+        if(post.user_id == 2):
+            allPost = {"id" : post.id, "content" : post.post_str, "likes" : post.post_like, "dislikes" : post.post_dislike}
+            listPost.append(allPost)
 
-    listPost = allPost
+    print(listPost)
 
-    return allPost
+    return jsonify(listPost)
 
 
-@app.route('/profile/post/<int:postId>', methods=['DELETE'])
+@app.route('/profile/post/delete', methods=['PUT'])
 @login_required
-def Profile_delete(postId):
-    query = UserPost.query.filter_by(id=postId).first()
-    db.session.delete(query)
-    db.session.commit()
-    return {}
+def Profile_delete():
+    
+    if request.method == 'PUT':
+        post = request.get_json()
+        postId = post["postId"]
+
+        print(postId)
+
+
+        query = UserPost.query.filter_by(id=int(postId)).first()
+        db.session.delete(query)
+        db.session.commit()
+        return {}
 
 @app.route('/settings', methods=['PUT'])
 @login_required
 def settings(postId):
     if request.methods == "PUT":
-        post = request.get_json()
-        newpassword = session.get("password")
+        newpassword = request.get_json()
+        #newpassword = session.get("password")
 
         info = session.get("user")
         userid = info["id"]
