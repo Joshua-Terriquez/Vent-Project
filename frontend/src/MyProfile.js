@@ -15,7 +15,11 @@ function MyProfile() {
   }, []);
 
   const handleDelete = (postId) => {
-    fetch('/profile/posts/${postId}', { method: 'DELETE' })
+    fetch('/profile/post/delete', {
+      method: 'PUT',
+      body: JSON.stringify({postId}),
+      headers: { 'Content-Type': 'application/json' },
+    })
       .then(response => response.json())
       .then(data => {
         // Remove the deleted post from the state

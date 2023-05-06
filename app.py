@@ -210,16 +210,17 @@ def Profile():
     info = session.get("user")
     id = info["id"]
     print(id)
+
+    post = []
     posts = UserPost.query.all()
 
-    allPost = {}
     listPost = []
 
     print(posts)
 
     for post in posts:
         if(post.user_id == 2):
-            allPost.update({"id" : post.id, "content" : post.post_str, "likes" : post.post_like, "dislikes" : post.post_dislike})
+            allPost = {"id" : post.id, "content" : post.post_str, "likes" : post.post_like, "dislikes" : post.post_dislike}
             listPost.append(allPost)
 
     print(listPost)
@@ -227,13 +228,21 @@ def Profile():
     return jsonify(listPost)
 
 
-@app.route('/profile/post/<postId>', methods=['DELETE'])
+@app.route('/profile/post/delete', methods=['PUT'])
 @login_required
-def Profile_delete(postId):
-    query = UserPost.query.filter_by(id=int(postId)).first()
-    db.session.delete(query)
-    db.session.commit()
-    return {}
+def Profile_delete():
+    
+    if request.method == 'PUT':
+        post = request.get_json()
+        postId = post["postId"]
+
+        print(postId)
+
+
+        query = UserPost.query.filter_by(id=int(postId)).first()
+        db.session.delete(query)
+        db.session.commit()
+        return {}
 
 @app.route('/settings', methods=['PUT'])
 @login_required
