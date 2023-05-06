@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ce2cbd5a.css",
+    "main.js": "/static/js/main.fb18e6f4.js",
+    "static/media/PostFormIcon.png": "/static/media/PostFormIcon.90ffb86c8ccf3e9f44cb.png",
+    "index.html": "/index.html",
+    "main.ce2cbd5a.css.map": "/static/css/main.ce2cbd5a.css.map",
+    "main.fb18e6f4.js.map": "/static/js/main.fb18e6f4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ce2cbd5a.css",
+    "static/js/main.fb18e6f4.js"
+  ]
+}
