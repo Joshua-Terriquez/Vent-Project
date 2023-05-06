@@ -23,6 +23,12 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(255))
     posts = db.relationship('UserPost', backref='author', lazy=True)
 
+    def __init__(self,Name,Email,Password):
+        self.name = Name
+        self.email = Email
+        self.password= Password
+
+
 class UserPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Text, nullable=False, default=str(datetime.now))
@@ -95,18 +101,6 @@ def logout():
     return {"success" : True} 
     #return redirect(url_for('/')) ################################## need to change
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    name = request.form['name']
-    email = request.form['email']
-    password = request.form['password']
-
-    # create a new user and add to database
-    new_user = User(name=name, email=email, password=password)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return redirect(url_for('login'))
 #-----------------------------------------------------
 
 
@@ -117,6 +111,22 @@ def home():
 
 #: Login, logout, session token(maybe),
 # new post upload, like/dislike (onclick return a new post to populate the <h2>, GET all post from self.
+
+@app.route('/signup', methods=['POST'] )
+@login_required
+def signup():
+
+    if request.method == 'POST':
+        info= request.get_json()
+        user = info["username"]
+        password = info["password"]
+        email = info["email"]
+
+        new_user = User(user,email,password)
+        db.session.add(new_user)
+        db.session.commit()
+
+    return {"signedUp" : True }
 
 @app.route('/like', methods=['PUT'] )
 @login_required
@@ -221,6 +231,22 @@ def Profile_delete(postId):
     db.session.delete(query)
     db.session.commit()
     return {}
+
+@app.route('/settings', methods=['PUT'])
+@login_required
+def settings(postId):
+    if request.methods == "PUT":
+        post = request.get_json()
+        newpassword = session.get("password")
+
+        info = session.get("user")
+        userid = info["id"]
+
+
+        user = UserPost.query.filter_by(id=userid).first()
+        user.password = newpassword
+        db.session.commit()
+        return {}
 
 @app.route('/MyFeed')
 @login_required
