@@ -1,48 +1,39 @@
-import React, { useState, useEffect } from "react";
-function PostTemplate({post, onDelete}){
+import React, { useState, useEffect } from 'react';
 
-//handle delete posts
-  const handleDeleteClick = () => {
-    //change api address
-    fetch(`/profile/posts/${post.id}`, { method: "DELETE" })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then((data) => {
-        onDelete(data.id);
-      })
-      .catch((error) => console.error(error));
-  };
-    return (
-      <div>
-        <p>Post: {post.postContent}</p>
-        <p>Likes: {post.likeCount}</p>
-        <p>Dislikes: {post.dislikeCount}</p>
-        <button onClick={handleDeleteClick}>Delete</button>
-      </div>
-    );
-}
+function MyProfile() {
+  const [posts, setPosts] = useState([]);
 
-function MyProfile(){
-  const [myPosts, setMyPosts] = useState([]);
-  //handle get my posts
   useEffect(() => {
-    fetch("/profile/posts")
-      .then((response) => response.json())
-      .then((data) => setMyPosts(data))
-      .catch((error) => console.error(error));
+    fetch('/profile/posts')
+      .then(response => response.json())
+      .then(data => {
+        // Convert the response data to an array of posts
+        const postsArray = Object.values(data).map(post => post);
+        setPosts(postsArray);
+      })
+      .catch(error => console.error(error));
   }, []);
-  //handle counter
-  const handleDeletePost = (postId) => {
-    setMyPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+
+  const handleDelete = (postId) => {
+    fetch('/profile/posts/${postId}', { method: 'DELETE' })
+      .then(response => response.json())
+      .then(data => {
+        // Remove the deleted post from the state
+        setPosts(posts.filter(post => post.id !== postId));
+      })
+      .catch(error => console.error(error));
   };
+
   return (
     <div>
-      {myPosts.map((post) => (
-        <PostTemplate key={post.id} post={post} onDelete={handleDeletePost} />
+      <h1>Your Posts</h1>
+      {posts.map(post => (
+        <div key={post.id}>
+          <p>{post.content}</p>
+          <p>Likes: {post.likes}</p>
+          <p>Dislikes: {post.dislikes}</p>
+          <button onClick={() => handleDelete(post.id)}>Delete</button>
+        </div>
       ))}
     </div>
   );
